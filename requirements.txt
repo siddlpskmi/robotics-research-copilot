@@ -5,3 +5,11 @@ google-generativeai
 python-dotenv
 langchain
 langchain-community
+fastapi
+uvicorn
+python-multipart
+groq
+arxiv
+gradio
+qdrant-client
+google-genai
