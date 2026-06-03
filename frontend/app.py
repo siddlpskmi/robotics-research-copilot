@@ -4,6 +4,9 @@ sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '
 
 import gradio as gr
 from ingestion.pipeline import ingest_pdf, ask
+from ingestion.chunker import chunk_text
+from ingestion.embedder import get_embeddings
+from ingestion.vector_store import store_chunks
 from agent.research_agent import run_agent
 from multimodal.vision import explain_figure
 
@@ -38,6 +41,17 @@ def handle_image(image_file, question):
     if image_file is None:
         return "Please upload an image."
     return explain_figure(image_file, question if question else None)
+
+
+def handle_text(text, question):
+    if not text:
+        return "Please paste some text first."
+    if not question:
+        return "Please enter a question."
+    chunks = chunk_text(text)
+    embeddings = get_embeddings(chunks)
+    store_chunks(chunks, embeddings, collection_name="text_input")
+    return ask(question, collection_name="text_input")
 
 
 # ── UI ────────────────────────────────────────────────────────────────────────
@@ -87,6 +101,22 @@ with gr.Blocks(title="Robotics Research Copilot", theme=gr.themes.Soft()) as dem
             figure_btn = gr.Button("Explain Figure", variant="primary")
             figure_output = gr.Textbox(label="Explanation", lines=8)
             figure_btn.click(handle_image, inputs=[image_input, figure_question], outputs=figure_output)
+
+        # Tab 5 — Raw Text
+        with gr.Tab("📝 Paste Text"):
+            gr.Markdown("Paste any text and ask questions from it.")
+            text_input = gr.Textbox(
+                label="Paste your text here",
+                placeholder="Paste a paragraph, abstract, or any text...",
+                lines=8
+            )
+            text_question = gr.Textbox(
+                label="Your Question",
+                placeholder="What does this text say about..."
+            )
+            text_btn = gr.Button("Ingest & Ask", variant="primary")
+            text_output = gr.Textbox(label="Answer", lines=6)
+            text_btn.click(handle_text, inputs=[text_input, text_question], outputs=text_output)
 
 if __name__ == "__main__":
     demo.launch(share=True)
