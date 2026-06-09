@@ -8,12 +8,14 @@ sdk_version: "6.15.2"
 app_file: app.py
 pinned: false
 ---
+Live Demo: https://huggingface.co/spaces/siddahuja/robotics-research-copilot
+GitHub: https://github.com/siddlpskmi/robotics-research-copilot
 
 # Robotics Research Copilot
 
 A domain-specific retrieval-augmented generation system combining agentic AI, multimodal vision, and semantic search for Robotics and Computer Vision research.
 
-## Overview
+## Overviewwhere 
 
 The system enables researchers to upload academic papers, query their contents through natural language, and autonomously retrieve relevant literature from arXiv. A LangGraph-based agent orchestrates tool selection across document retrieval, semantic search, and visual understanding — eliminating the need for manual literature management.
 
