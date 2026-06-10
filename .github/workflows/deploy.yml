@@ -1,0 +1,24 @@
+name: Deploy to Hugging Face Spaces
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Push to Hugging Face Spaces
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          git config --global user.email "sidd.ahuja14@gmail.com"
+          git config --global user.name "Siddharth Ahuja"
+          git push https://siddahuja:$HF_TOKEN@huggingface.co/spaces/siddahuja/robotics-research-copilot main --force
